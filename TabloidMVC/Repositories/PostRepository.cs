@@ -131,6 +131,46 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public List<Post> GetPostsByUserId(int userId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT p.Id, p.Title, p.Content, 
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId, p.UserProfileId,
+                              c.[Name] AS CategoryName,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName
+                         FROM Post p
+                              LEFT JOIN Category c ON p.CategoryId = c.id
+                              LEFT JOIN UserProfile u ON p.UserProfileId = u.id
+                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                        WHERE p.UserProfileId = @id";
+
+                    cmd.Parameters.AddWithValue("@id", userId); 
+                    var reader = cmd.ExecuteReader();
+
+                    List<Post> posts = new List<Post>();
+                    while (reader.Read())
+                    {
+                        Post post = null;
+                        post = NewPostFromReader(reader);
+                        posts.Add(post);
+                    }
+                    
+                    reader.Close();
+                    
+                    return posts;
+                }
+            }
+        }
 
 
         public void Add(Post post)
@@ -197,5 +237,10 @@ namespace TabloidMVC.Repositories
                 }
             };
         }
+
+        //List<Post> IPostRepository.GetPostsByUserId(int userId)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
