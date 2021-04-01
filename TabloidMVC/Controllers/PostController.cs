@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using TabloidMVC.Models;
@@ -22,7 +23,7 @@ namespace TabloidMVC.Controllers
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
         }
-
+        
         public IActionResult Index()
         {
             var posts = _postRepository.GetAllPublishedPosts();
@@ -83,21 +84,38 @@ namespace TabloidMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
+
+        // GET: DogsController/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
-            return View();
+            int userId = GetCurrentUserProfileId();
+            Post post = _postRepository.GetPublishedPostById(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            else if (userId != post.UserProfileId)
+            {
+                return Unauthorized();
+            }
+            return View(post);
         }
+
+        // POST: DogsController/Delete/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Post post)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _postRepository.DeletePost(id);
+                return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return View(post);
             }
         }
     }
