@@ -23,7 +23,7 @@ namespace TabloidMVC.Controllers
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
         }
-
+        
         public IActionResult Index()
         {
             var posts = _postRepository.GetAllPublishedPosts();
@@ -89,7 +89,16 @@ namespace TabloidMVC.Controllers
         [Authorize]
         public ActionResult Delete(int id)
         {
+            int userId = GetCurrentUserProfileId();
             Post post = _postRepository.GetPublishedPostById(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            else if (userId != post.UserProfileId)
+            {
+                return Unauthorized();
+            }
             return View(post);
         }
 
