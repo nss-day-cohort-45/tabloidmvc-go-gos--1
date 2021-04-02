@@ -85,7 +85,6 @@ namespace TabloidMVC.Controllers
             return int.Parse(id);
         }
 
-        // GET: DogsController/Delete/5
         [Authorize]
         public ActionResult Delete(int id)
         {
@@ -102,7 +101,6 @@ namespace TabloidMVC.Controllers
             return View(post);
         }
 
-        // POST: DogsController/Delete/5
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -118,5 +116,46 @@ namespace TabloidMVC.Controllers
                 return View(post);
             }
         }
+
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            Post post = _postRepository.GetPublishedPostById(id);
+            List<Category> CategoryOptions = _categoryRepository.GetAll();
+            PostCreateViewModel vm = new PostCreateViewModel()
+            {
+                Post = post,
+                CategoryOptions = CategoryOptions
+             };
+
+            int userId = GetCurrentUserProfileId();
+            if (post == null)
+            {
+                return NotFound();
+            }
+            else if (userId != post.UserProfileId)
+            {
+                return Unauthorized();
+            }
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, Post post)
+        {
+            try
+            {
+                _postRepository.UpdatePost(post);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return View(post);
+            }
+        }
+
     }
 }
