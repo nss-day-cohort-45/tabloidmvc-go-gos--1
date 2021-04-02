@@ -237,18 +237,18 @@ namespace TabloidMVC.Repositories
                                 CreateDateTime = @createDateTime,
                                 PublishDateTime = @publishDatetime,
                                 IsApproved = @isApproved,
-                                Category = @category,
-                                UserProfile = @userProfile
+                                CategoryId = @categoryId,
+                                UserProfileId = @userProfileId
                             WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@title", post.Title);
-                    cmd.Parameters.AddWithValue("@imageLocation", post.ImageLocation);
                     cmd.Parameters.AddWithValue("@content", post.Content);
+                    cmd.Parameters.AddWithValue("@imageLocation", DbUtils.ValueOrDBNull (post.ImageLocation));
                     cmd.Parameters.AddWithValue("@createDateTime", post.CreateDateTime);
-                    cmd.Parameters.AddWithValue("@publishDatetime", post.PublishDateTime);
+                    cmd.Parameters.AddWithValue("@publishDatetime", DbUtils.ValueOrDBNull(post.PublishDateTime));
                     cmd.Parameters.AddWithValue("@isApproved", post.IsApproved);
-                    cmd.Parameters.AddWithValue("@category", post.Category);
-                    cmd.Parameters.AddWithValue("@userProfile", post.UserProfile);
+                    cmd.Parameters.AddWithValue("@categoryId", post.CategoryId);
+                    cmd.Parameters.AddWithValue("@userProfileId", post.UserProfileId);
                     cmd.Parameters.AddWithValue("@id", post.Id);
 
                     cmd.ExecuteNonQuery();
