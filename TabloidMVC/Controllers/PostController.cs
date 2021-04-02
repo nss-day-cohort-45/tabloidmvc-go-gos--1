@@ -144,6 +144,13 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Post post)
         {
+            var databasePost = _postRepository.GetPublishedPostById();
+            List<Category> CategoryOptions = _categoryRepository.GetAll();
+            PostCreateViewModel vm = new PostCreateViewModel()
+            {
+                Post = post,
+                CategoryOptions = CategoryOptions
+            };
             try
             {
                 _postRepository.UpdatePost(post);
@@ -153,7 +160,7 @@ namespace TabloidMVC.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return View(post);
+                return View(vm);
             }
         }
 

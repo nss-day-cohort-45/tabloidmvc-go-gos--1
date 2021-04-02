@@ -71,22 +71,22 @@ namespace TabloidMVC.Repositories
                               LEFT JOIN Category c ON p.CategoryId = c.id
                               LEFT JOIN UserProfile u ON p.UserProfileId = u.id
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
-                        WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()
+                        WHERE PublishDateTime < SYSDATETIME()
                               AND p.id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
                     var reader = cmd.ExecuteReader();
 
-                    Post post = null;
-
                     if (reader.Read())
                     {
-                        post = NewPostFromReader(reader);
+                        Post post = NewPostFromReader(reader);
+                        reader.Close();
+
+                        return post;
                     }
-
                     reader.Close();
+                    return null;
 
-                    return post;
                 }
             }
         }

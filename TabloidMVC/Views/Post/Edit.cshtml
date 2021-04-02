@@ -13,11 +13,6 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Post.Id" class="control-label"></label>
-                <input asp-for="Post.Id" class="form-control" />
-                <span asp-validation-for="Post.Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Post.Title" class="control-label"></label>
                 <input asp-for="Post.Title" class="form-control" />
                 <span asp-validation-for="Post.Title" class="text-danger"></span>
@@ -33,11 +28,6 @@
                 <span asp-validation-for="Post.ImageLocation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Post.CreateDateTime" class="control-label"></label>
-                <input asp-for="Post.CreateDateTime" class="form-control" />
-                <span asp-validation-for="Post.CreateDateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Post.PublishDateTime" class="control-label"></label>
                 <input asp-for="Post.PublishDateTime" class="form-control" />
                 <span asp-validation-for="Post.PublishDateTime" class="text-danger"></span>
@@ -47,18 +37,18 @@
                     <input class="form-check-input" asp-for="Post.IsApproved" /> @Html.DisplayNameFor(model => model.Post.IsApproved)
                 </label>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Post.CategoryId" class="control-label"></label>
                 <input asp-for="Post.CategoryId" class="form-control" />
                 <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
-                <label asp-for="Post.Category" class="control-label"></label>
-                <select asp-for="Post.Category" class="form-control">
+                <label asp-for="Post.CategoryId" class="control-label"></label>
+                <select asp-for="Post.CategoryId" class="form-control">
                     <option value="">Select Category</option>
-                    @foreach (var category in Model.CategoryOptions)
+                    @foreach (Category category in Model.CategoryOptions)
                     {
-                        <option value="@category">@category.Name</option>
+                        <option value="@category.Id">@category.Name</option>
                     }
                 </select>
             </div>
