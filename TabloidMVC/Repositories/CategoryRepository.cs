@@ -62,7 +62,7 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"
                             UPDATE Category
                             SET 
-                                Name = @name, 
+                                Name = @name
                             WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@name", category.Name);

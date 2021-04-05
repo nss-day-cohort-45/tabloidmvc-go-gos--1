@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -52,6 +53,37 @@ namespace TabloidMVC.Controllers
             try
             {
                 _catRepo.DeleteCategory(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                
+                return View(cat);
+            }
+        }
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            Category cat = _catRepo.GetCategoryById(id);
+
+            int userId = GetCurrentUserProfileId();
+            if (cat == null)
+            {
+                return NotFound();
+            }
+            return View(cat);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, Category cat)
+        {
+            var databaseCategory = _catRepo.GetCategoryById(id);
+            try
+            {
+                cat.Id = id;
+                _catRepo.UpdateCategory(cat);
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
