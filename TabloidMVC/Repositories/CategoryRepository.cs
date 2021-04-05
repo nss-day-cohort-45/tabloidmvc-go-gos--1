@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection.PortableExecutable;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
