@@ -28,6 +28,30 @@ namespace TabloidMVC.Controllers
             return View(tags);
         }
 
+        public ActionResult Delete(int id)
+        {
+            Tag tag = _tagRepo.GetTagById(id);
+
+            return View(tag);
+        }
+
+      
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, Tag tag)
+        {
+            try
+            {
+                _tagRepo.DeleteTag(id);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(tag);
+            }
+        }
+
         //Get: Create Tag
         [Authorize]
         public ActionResult Create()
@@ -48,6 +72,7 @@ namespace TabloidMVC.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return View(tag);
             }
         }

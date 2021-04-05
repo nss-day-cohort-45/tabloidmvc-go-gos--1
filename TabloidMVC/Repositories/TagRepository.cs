@@ -35,7 +35,7 @@ namespace TabloidMVC.Repositories
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name"))
-                         };
+                        };
 
                         tags.Add(tag);
                     }
@@ -56,16 +56,82 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"
                     INSERT INTO Tag ([Name]) 
                     OUTPUT INSERTED.ID
-                    VALUE (@name);";
+                    VALUES (@name);";
 
                     cmd.Parameters.AddWithValue("@name", tag.Name);
 
                     int id = (int)cmd.ExecuteScalar();
 
                     tag.Id = id;
+
+
                 }
             }
         }
-    }
+        public Tag GetTagById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT Id, Name
+                        FROM Tag
+                        WHERE Id = @id
+                    ";
 
-}
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        Tag tag = new Tag
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                        };
+
+                        reader.Close();
+                        return tag;
+                    }
+                    else
+                    {
+                        reader.Close();
+                        return null;
+                    }
+                }
+            }
+        }
+
+
+
+        public void DeleteTag(int tagId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM Tag
+                            WHERE Id = @id
+                        ";
+
+                    cmd.Parameters.AddWithValue("@id", tagId);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+            }
+
+        }
+                 
+     }
+ }
+        
+    
+
+
