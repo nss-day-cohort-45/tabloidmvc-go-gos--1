@@ -83,7 +83,6 @@ namespace TabloidMVC.Repositories
                             Email = reader.GetString(reader.GetOrdinal("Email")),
                             FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                             LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                            FullName = reader.GetString(reader.GetOrdinal("FullName")), 
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                             ImageLocation = DbUtils.GetNullableString(reader, "ImageLocation"),
                             UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
