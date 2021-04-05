@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Reflection.PortableExecutable;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
+using TabloidMVC.Utils;
 
 namespace TabloidMVC.Repositories
 {
@@ -34,7 +39,6 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-
         public void AddCategory(Category category)
         {
             using (var conn = Connection)
@@ -53,6 +57,15 @@ namespace TabloidMVC.Repositories
                     category.Id = (int)cmd.ExecuteScalar();
                 }
             }
+        }
+
+        private Category NewCategoryFromReader(SqlDataReader reader)
+        {
+            return new Category()
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Name = reader.GetString(reader.GetOrdinal("Name"))
+            };
         }
     }
 }
