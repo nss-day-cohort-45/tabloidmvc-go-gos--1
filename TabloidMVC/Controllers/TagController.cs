@@ -51,5 +51,55 @@ namespace TabloidMVC.Controllers
                 return View(tag);
             }
         }
+
+        //Get: Create Tag
+        [Authorize]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        //Post: Create Tag
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult Create(Tag tag)
+        {
+            try
+            {
+                _tagRepo.AddTag(tag);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(tag);
+            }
+        }
+
+        //Get: Edit Tag
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            Tag tag = _tagRepo.GetTagById(id);
+            return View(tag);
+        }
+
+        //Post: Edit Tag
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit (int id, Tag tag)
+        {
+            try
+            {
+                _tagRepo.UpdateTag(tag);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return View(tag);
+            }
+        }
+
     }
 }
