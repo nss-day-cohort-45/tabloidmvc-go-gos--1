@@ -71,22 +71,22 @@ namespace TabloidMVC.Repositories
                               LEFT JOIN Category c ON p.CategoryId = c.id
                               LEFT JOIN UserProfile u ON p.UserProfileId = u.id
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
-                        WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()
+                        WHERE PublishDateTime < SYSDATETIME()
                               AND p.id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
                     var reader = cmd.ExecuteReader();
 
-                    Post post = null;
-
                     if (reader.Read())
                     {
-                        post = NewPostFromReader(reader);
+                        Post post = NewPostFromReader(reader);
+                        reader.Close();
+
+                        return post;
                     }
-
                     reader.Close();
+                    return null;
 
-                    return post;
                 }
             }
         }
@@ -215,6 +215,36 @@ namespace TabloidMVC.Repositories
                                       WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@id", postId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdatePost(Post post)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Post
+                            SET 
+                                Title = @title, 
+                                ImageLocation = @imageLocation,
+                                Content = @content,
+                                PublishDateTime = @publishDatetime,
+                                CategoryId = @categoryId
+                            WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@title", post.Title);
+                    cmd.Parameters.AddWithValue("@content", post.Content);
+                    cmd.Parameters.AddWithValue("@imageLocation", DbUtils.ValueOrDBNull (post.ImageLocation));
+                    cmd.Parameters.AddWithValue("@publishDatetime", DbUtils.ValueOrDBNull(post.PublishDateTime));
+                    cmd.Parameters.AddWithValue("@categoryId", post.CategoryId);
+                    cmd.Parameters.AddWithValue("@id", post.Id);
+
                     cmd.ExecuteNonQuery();
                 }
             }
