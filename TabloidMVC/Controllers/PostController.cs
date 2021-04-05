@@ -144,15 +144,16 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Post post)
         {
-            //var databasePost = _postRepository.GetPublishedPostById(id);
-            //List<Category> CategoryOptions = _categoryRepository.GetAll();
-            //PostCreateViewModel vm = new PostCreateViewModel()
-            //{
-            //    Post = databasePost,
-            //    CategoryOptions = CategoryOptions
-            //};
+            var databasePost = _postRepository.GetPublishedPostById(id);
+            List<Category> CategoryOptions = _categoryRepository.GetAll();
+            PostCreateViewModel vm = new PostCreateViewModel()
+            {
+                Post = databasePost,
+                CategoryOptions = CategoryOptions
+            };
             try
             {
+                post.Id = id;
                 _postRepository.UpdatePost(post);
 
                 return RedirectToAction("Index");
@@ -160,7 +161,7 @@ namespace TabloidMVC.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return View(post);
+                return View(vm);
             }
         }
 
