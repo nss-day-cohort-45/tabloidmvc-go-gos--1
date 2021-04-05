@@ -35,7 +35,7 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        public void Add(Category category)
+        public void AddCategory(Category category)
         {
             using (var conn = Connection)
             {
