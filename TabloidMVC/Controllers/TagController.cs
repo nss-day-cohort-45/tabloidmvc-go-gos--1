@@ -96,7 +96,6 @@ namespace TabloidMVC.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return View(tag);
             }
         }
