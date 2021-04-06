@@ -17,11 +17,13 @@ namespace TabloidMVC.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository _catRepo;
+        private readonly IPostRepository _postRepo;
 
 
-        public CategoryController(ICategoryRepository categoryRepository)
+        public CategoryController(ICategoryRepository categoryRepository, IPostRepository postRepository)
         {
             _catRepo = categoryRepository;
+            _postRepo = postRepository;
         }
 
         //GET: CategoryController
@@ -39,13 +41,27 @@ namespace TabloidMVC.Controllers
         [Authorize]
         public ActionResult Delete(int id)
         {
-            int userId = GetCurrentUserProfileId();
-            Category cat = _catRepo.GetCategoryById(id);
-            if (cat == null)
+            List<Post> posts= _postRepo.GetAllPublishedPosts();
+            CategoryDeleteViewModel vm = new CategoryDeleteViewModel();
+            vm.Category = _catRepo.GetCategoryById(id);
+            vm.Message = null;
+            foreach(Post post in posts)
+            {
+                if(post.CategoryId == vm.Category.Id)
+                {
+                    vm.Message = $"The {vm.Category.Name} category is associated to one or multiple posts.  Cannot Delete.";
+                    return View(vm);
+                }
+                else if(post.CategoryId != vm.Category.Id)
+                {
+                    vm.Post = post;
+                }
+            }
+            if (vm.Category == null)
             {
                 return NotFound();
             }
-            return View(cat);
+            return View(vm);
         }
 
         [Authorize]
