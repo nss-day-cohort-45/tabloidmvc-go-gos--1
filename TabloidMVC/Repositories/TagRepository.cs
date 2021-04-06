@@ -106,6 +106,47 @@ namespace TabloidMVC.Repositories
         }
 
 
+        public List<Tag> GetTagzByPostId(int postId) {
+
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            SELECT t.Name, p.Id
+                            FROM Tag t
+                            LEFT JOIN PostTag pt on t.Id = pt.TagId
+                            LEFT JOIN Post p on pt.PostId = p.Id
+                            WHERE p.Id = @id
+                        ";
+
+                    cmd.Parameters.AddWithValue("@id", postId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+
+
+                    List<Tag> tagz = new List<Tag>();
+                    while (reader.Read())
+                    {
+                        Tag tag = new Tag
+                        {
+                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                        };
+                        tagz.Add(tag);
+                    }
+
+                    reader.Close();
+
+                    return tagz;
+
+
+                }
+            }
+
+        }
+
 
         public void DeleteTag(int tagId)
         {

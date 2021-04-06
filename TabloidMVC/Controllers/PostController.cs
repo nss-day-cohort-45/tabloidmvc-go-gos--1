@@ -42,6 +42,9 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
+            var vm = new PostCreateViewModel();
+            vm.PostTags = _tagRepo.GetTagzByPostId(id);
+
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
@@ -50,8 +53,10 @@ namespace TabloidMVC.Controllers
                 {
                     return NotFound();
                 }
+
             }
-            return View(post);
+            vm.Post = post;
+            return View(vm);
         }
 
         public IActionResult Create()

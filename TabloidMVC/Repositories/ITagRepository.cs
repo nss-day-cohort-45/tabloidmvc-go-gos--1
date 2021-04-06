@@ -10,6 +10,7 @@ namespace TabloidMVC.Repositories
     {
         List<Tag> GetAllTags();
 
+        List<Tag> GetTagzByPostId(int postId);
 
         void AddTag(Tag tag);
 
