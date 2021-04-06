@@ -131,6 +131,7 @@ namespace TabloidMVC.Controllers
                 Post post = _postRepository.GetPublishedPostById(id);
                 List<Category> CategoryOptions = _categoryRepository.GetAll();
                 List<Tag> TagOptions = _tagRepo.GetAllTags();
+
                 PostCreateViewModel vm = new PostCreateViewModel()
                 {
                     Post = post,
@@ -162,10 +163,14 @@ namespace TabloidMVC.Controllers
         {
             var databasePost = _postRepository.GetPublishedPostById(id);
             List<Category> CategoryOptions = _categoryRepository.GetAll();
+            List<Tag> SelectedTags = new List<Tag>();
+            var ChosenTags = _tagRepo.GetTagById(id);
+            SelectedTags.Add(ChosenTags);
             PostCreateViewModel vm = new PostCreateViewModel()
             {
                 Post = databasePost,
-                CategoryOptions = CategoryOptions
+                CategoryOptions = CategoryOptions,
+                SelectedTags = SelectedTags
             };
             try
             {
