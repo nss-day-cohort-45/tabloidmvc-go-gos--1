@@ -17,11 +17,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ITagRepository _tagRepo;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _tagRepo = tagRepository;
         }
         
         public IActionResult Index()
@@ -120,24 +122,33 @@ namespace TabloidMVC.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-            Post post = _postRepository.GetPublishedPostById(id);
-            List<Category> CategoryOptions = _categoryRepository.GetAll();
-            PostCreateViewModel vm = new PostCreateViewModel()
-            {
-                Post = post,
-                CategoryOptions = CategoryOptions
-             };
-
-            int userId = GetCurrentUserProfileId();
-            if (post == null)
-            {
-                return NotFound();
+           
+                Post post = _postRepository.GetPublishedPostById(id);
+                List<Category> CategoryOptions = _categoryRepository.GetAll();
+                List<Tag> TagOptions = _tagRepo.GetAllTags();
+                PostCreateViewModel vm = new PostCreateViewModel()
+                {
+                    Post = post,
+                    CategoryOptions = CategoryOptions,
+                    TagOptions = TagOptions,
+                };
+                try { 
+                int userId = GetCurrentUserProfileId();
+                    if (post == null)
+                    {
+                        return NotFound();
+                    }
+                    else if (userId != post.UserProfileId)
+                    {
+                        return Unauthorized();
+                    }
+                    return View(vm);
             }
-            else if (userId != post.UserProfileId)
+            catch (Exception ex)
             {
-                return Unauthorized();
+                Console.WriteLine(ex);
+                return View(vm);
             }
-            return View(vm);
         }
 
         [HttpPost]
