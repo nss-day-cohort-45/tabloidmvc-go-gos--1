@@ -46,7 +46,7 @@ namespace TabloidMVC.Controllers
             {
                 if(post.CategoryId == vm.Category.Id)
                 {
-                    vm.Message = "you suck";
+                    vm.Message = $"The {vm.Category.Name} category is associated to one or multiple posts.  Cannot Delete.";
                     return View(vm);
                 }
                 else if(post.CategoryId != vm.Category.Id)
