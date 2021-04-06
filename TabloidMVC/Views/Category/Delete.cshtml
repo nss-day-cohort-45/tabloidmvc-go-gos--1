@@ -10,29 +10,36 @@
         if (Model.Message != $"The {Model.Category.Name} category is associated to one or multiple posts.  Cannot Delete.")
         {
             <h3>Are you sure you want to delete @Model.Category.Name?</h3>
-        <hr />
-            }
+            <hr />
         }
-<dl class="row">
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Message)
-    </dd>
-    <dd class="col-sm-10">
-        @Html.DisplayNameFor(model => model.Category)
-    </dd>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Category.Name)
-    </dd>
-</dl>
-        @{
-            if (Model.Message != $"The {Model.Category.Name} category is associated to one or multiple posts.  Cannot Delete.")
-            {
-                <form asp-action="Delete">
-                    <input type="submit" value="Delete" class="btn btn-danger" /> |
-                    <a asp-action="Index">Back to List</a>
-                </form>
+    }
+    <dl class="row">
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Message)
+        </dd>
+        <dd class="col-sm-10">
+            @Html.DisplayNameFor(model => model.Category)
+        </dd>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+    </dl>
+    @{
+        if (Model.Message != $"The {Model.Category.Name} category is associated to one or multiple posts.  Cannot Delete.")
+        {
+            <form asp-action="Delete">
+                <input type="submit" value="Delete" class="btn btn-danger" /> |
+                <a asp-action="Index">Back to List</a>
+            </form>
 
-            }
         }
-    </div>
+        else
+        {
+            <form asp-action="Index">
+                <input type="submit" value="Go Back" class="btn btn-danger" /> |
+                <a asp-action="Index"></a>
+            </form>
+        }
+    }
+</div>
           
