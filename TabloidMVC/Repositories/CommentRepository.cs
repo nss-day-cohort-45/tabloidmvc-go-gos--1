@@ -108,6 +108,50 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public void Delete(int commentId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        DELETE FROM Comment
+                        WHERE Id = @commentId
+                    ";
+                    cmd.Parameters.AddWithValue("@commentId", commentId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateComment(Comment comment)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        UPDATE Comment
+                        SET
+                            Subject = @subject,
+                            Content = @content
+                        WHERE Id = @id
+                        ";
+                    cmd.Parameters.AddWithValue("@subject", comment.Subject);
+                    cmd.Parameters.AddWithValue("@content", comment.Content);
+                    cmd.Parameters.AddWithValue("@id", comment.Id);
+
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
         private Comment NewCommentFromReader(SqlDataReader reader)
         {
             return new Comment()
