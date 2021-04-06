@@ -20,10 +20,12 @@ namespace TabloidMVC.Repositories
                 {
                     cmd.CommandText = @"
                         INSERT INTO Comment (
-                            PostId, UserProfileId, Subject, Content, CreateDateTime )
+                            PostId, UserProfileId, Subject, 
+                            Content, CreateDateTime )
                         OUTPUT INSERTED.ID
                         Values (
-                            @PostId, @UserProfileId, @Subject, @Context, @CreateDateTime )
+                            @PostId, @UserProfileId, @Subject, 
+                            @Context, @CreateDateTime )
                         ";
                     cmd.Parameters.AddWithValue("@PostId", comment.PostId);
                     cmd.Parameters.AddWithValue("@UserProfileId", comment.UserProfileId);
@@ -72,6 +74,52 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public Comment GetCommentById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT c.Id, c.PostId, c.UserProfileId, 
+                               c.Subject, c.Content, c.CreateDateTime,
+                               u.DisplayName AS userName
+                        FROM Comment c
+                        LEFT JOIN UserProfile u ON c.UserProfileId = u.Id
+                        WHERE @Id = c.Id
+                        ORDER BY CreateDateTime DESC
+                    ";
 
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    var reader = cmd.ExecuteReader();
+
+                    Comment comment = null;
+
+                    if (reader.Read())
+                    {
+                        comment = NewCommentFromReader(reader);
+                    }
+
+                    reader.Close();
+
+                    return comment;
+                }
+            }
+        }
+
+        private Comment NewCommentFromReader(SqlDataReader reader)
+        {
+            return new Comment()
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+                UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                Subject = reader.GetString(reader.GetOrdinal("Subject")),
+                Content = reader.GetString(reader.GetOrdinal("Content")),
+                CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                UserName = reader.GetString(reader.GetOrdinal("UserName"))
+            };
+        }
     }
 }

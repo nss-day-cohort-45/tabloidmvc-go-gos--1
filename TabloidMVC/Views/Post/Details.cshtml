@@ -37,4 +37,8 @@
             <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.Content)</p>
         </section>
     </div>
+    <form asp-controller="Comments">
+        <input type="submit" value="View Comments" class="btn btn-danger" /> |
+        <a asp-action="Details"></a>
+    </form>
 </div>
